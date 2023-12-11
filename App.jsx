@@ -2,48 +2,51 @@ import React from "react"
 import Sidebar from "./components/Sidebar"
 import Editor from "./components/Editor"
 import Split from "react-split"
-import { nanoid } from "nanoid"
+import { notesCollection, db } from "./firebase";
+import { onSnapshot, addDoc, doc, deleteDoc, setDoc } from "firebase/firestore";
 
 export default function App() {
-    const [notes, setNotes] = React.useState(
-        () => JSON.parse(localStorage.getItem("notes")) || []
-    )
-    const [currentNoteId, setCurrentNoteId] = React.useState(
-        (notes[0] && notes[0].id) || ""
-    )
+    const [notes, setNotes] = React.useState([])
+    const [currentNoteId, setCurrentNoteId] = React.useState("")
+
+    console.log(currentNoteId)
 
     React.useEffect(() => {
-        localStorage.setItem("notes", JSON.stringify(notes))
-    }, [notes])
+        const unsubscribe = onSnapshot(notesCollection, function(snapshot) {
+            // sync up local notes array with snapshot data
+            const notesArr = snapshot.docs.map(doc => ({
+                ...doc.data(),
+                id: doc.id
+            }))
+            setNotes(notesArr)
+        })
+        return unsubscribe
+    }, [])
 
-    function createNewNote() {
+    React.useEffect(() => {
+        if (!currentNoteId) {
+            setCurrentNoteId(notes[0]?.id)
+        }
+    }, [notes]) 
+
+    async function createNewNote() {
         const newNote = {
-            id: nanoid(),
             body: "# Type your markdown note's title here"
         }
-        setNotes(prevNotes => [newNote, ...prevNotes])
-        setCurrentNoteId(newNote.id)
+        const newNoteRef = await addDoc(notesCollection, newNote)
+        setCurrentNoteId(newNoteRef.id)
     }
 
-    function updateNote(text) {
-        setNotes(oldNotes => {
-            const newArray = []
-            for (let i = 0; i < oldNotes.length; i++) {
-                const oldNote = oldNotes[i]
-                if (oldNote.id === currentNoteId) {
-                    // Put the most recently-modified note at the top
-                    newArray.unshift({ ...oldNote, body: text })
-                } else {
-                    newArray.push(oldNote)
-                }
-            }
-            return newArray
-        })
+    async function updateNote(text) {
+        const docRef = doc(db, "notes", currentNoteId)
+        await setDoc(docRef, { body: text }, { merge: true })
+
     }
 
-    function deleteNote(event, noteId) {
-        event.stopPropagation()
-        setNotes(oldNotes => oldNotes.filter(note => note.id !== noteId))
+    async function deleteNote(noteId) {
+        const docRef = doc(db, "notes", noteId)
+        await deleteDoc(docRef)
+
     }
 
     function findCurrentNote() {
@@ -69,14 +72,11 @@ export default function App() {
                             newNote={createNewNote}
                             deleteNote={deleteNote}
                         />
-                        {
-                            currentNoteId &&
-                            notes.length > 0 &&
-                            <Editor
-                                currentNote={findCurrentNote()}
-                                updateNote={updateNote}
-                            />
-                        }
+                        <Editor
+                            currentNote={findCurrentNote()}
+                            updateNote={updateNote}
+                        />
+                        
                     </Split>
                     :
                     <div className="no-notes">
