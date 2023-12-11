@@ -5,8 +5,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Karla', sans-serif;
-}
+    font-family: 'Sometype Mono', monospace;}
 
 button:focus {
     outline: none;
@@ -28,14 +27,12 @@ button:focus {
     height: 100vh;
 }
 
-.sidebar--note {
-    /* display: flex; */
-}
-
 .sidebar--header {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    font-family: 'Rubik Mono One', monospace;
+
 }
 
 .sidebar--header > h3 {
@@ -44,7 +41,7 @@ button:focus {
 
 .new-note {
     cursor: pointer;
-    background-color: #4A4E74;
+    background-color: #7e88df;
     border: none;
     color: white;
     border-radius: 3px;
@@ -54,16 +51,25 @@ button:focus {
 
 .first-note {
     cursor: pointer;
-    background-color: #4A4E74;
-    border: none;
+    background-color: #7e88df;
+    border: 1px solid;
     color: white;
     border-radius: 3px;
     padding: 1rem;
+    font-family: 'Sometype Mono', monospace;
+}
+
+.first-note:hover {
+    border: 1px solid;
+    border-color: #7e88df;
+    color: #7e88df; 
+    background-color: transparent;
 }
 
 .editor {
     width: 80%;
     height: 100vh;
+    margin-top: 20px;
 }
 
 .title {
@@ -95,19 +101,20 @@ button:focus {
     font-size: 0.8rem;
     font-weight: 400;
     line-height: 1.2rem;
-    color: #4A4E74;
+    color: #7e88df;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .selected-note {
-    background-color: #4A4E74;
+    background-color: #7e88df;
 }
 
 .selected-note .text-snippet {
     color: white;
     font-weight: 700;
+    font-size: 1rem;
 }
 
 .gutter {
@@ -137,6 +144,7 @@ button:focus {
     justify-content: center;
     align-items: center;
     background-color: whitesmoke;
+    font-family: 'Rubik Mono One', monospace;
 }
 
 .delete-btn {
@@ -151,6 +159,7 @@ button:focus {
 
 .trash-icon {
     cursor: pointer;
+    opacity: 50%;
 }
 
  .gg-trash {
@@ -167,7 +176,8 @@ button:focus {
         inset 2px 0 0;
     border-bottom-left-radius: 1px;
     border-bottom-right-radius: 1px;
-    margin-top: 4px
+    margin-top: 4px;
+    margin-right: 7px;
 }
 
 .gg-trash::after,
