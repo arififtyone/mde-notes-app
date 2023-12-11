@@ -9,6 +9,8 @@ export default function App() {
     const [notes, setNotes] = React.useState([])
     const [currentNoteId, setCurrentNoteId] = React.useState("")
 
+    const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt)
+
     console.log(currentNoteId)
 
     React.useEffect(() => {
@@ -45,8 +47,7 @@ export default function App() {
         const docRef = doc(db, "notes", currentNoteId)
         await setDoc(
             docRef, 
-            { body: text, updatedAt: Date.now() }, 
-            { merge: true })
+            { body: text, updatedAt: Date.now() }, { merge: true })
 
     }
 
@@ -73,7 +74,7 @@ export default function App() {
                         className="split"
                     >
                         <Sidebar
-                            notes={notes}
+                            notes={sortedNotes}
                             currentNote={findCurrentNote()}
                             setCurrentNoteId={setCurrentNoteId}
                             newNote={createNewNote}

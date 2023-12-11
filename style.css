@@ -118,8 +118,8 @@ button:focus {
 }
 
 .gutter {
-    background-color: #eee;
-
+    background-color: #7e88df;
+    opacity: 40%;
     background-repeat: no-repeat;
     background-position: 50%;
 }
